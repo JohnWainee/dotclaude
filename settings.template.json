@@ -1,0 +1,108 @@
+{
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "mintlify@claude-plugins-official": true
+  },
+  "env": {
+    "DISABLE_TELEMETRY": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
+  },
+  "enableAllProjectMcpServers": false,
+  "statusLine": {
+    "type": "command",
+    "command": "node \"__CLAUDE_DIR__/statusline.mjs\""
+  },
+  "permissions": {
+    "deny": [
+      "Read(~/.ssh/**)",
+      "Edit(~/.ssh/**)",
+      "Read(~/.gnupg/**)",
+      "Edit(~/.gnupg/**)",
+      "Read(~/.aws/**)",
+      "Edit(~/.aws/**)",
+      "Read(~/.azure/**)",
+      "Edit(~/.azure/**)",
+      "Read(~/.kube/**)",
+      "Edit(~/.kube/**)",
+      "Read(~/.config/gh/**)",
+      "Edit(~/.config/gh/**)",
+      "Read(~/.npmrc)",
+      "Read(~/.pypirc)",
+      "Read(~/.git-credentials)",
+      "Read(~/.docker/config.json)",
+      "Edit(~/.bashrc)",
+      "Edit(~/.zshrc)",
+      "Edit(~/.bash_profile)",
+      "Edit(~/.profile)",
+      "Read(**/.env)",
+      "Edit(**/.env)",
+      "Read(**/.env.local)",
+      "Edit(**/.env.local)",
+      "Read(**/*.pem)",
+      "Read(**/*.p12)",
+      "Read(~/Library/Keychains/**)"
+    ]
+  },
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"__CLAUDE_DIR__/skills/learn-loop/hooks/session-end.mjs\""
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"__CLAUDE_DIR__/skills/learn-loop/hooks/session-start.mjs\""
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"__CLAUDE_DIR__/skills/learn-loop/hooks/pre-compact.mjs\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git *)",
+            "command": "node \"__CLAUDE_DIR__/hooks/block-main-push.mjs\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Review the conversation. If the user's explicit request still has unfinished steps that the assistant can act on now, OR a verification the user asked for (build/tests/lint) was skipped or left failing, respond {\"ok\": false, \"reason\": \"<concise: what remains>\"}. If the work is complete, the question was answered, the exchange was trivial, OR the assistant is intentionally paused awaiting a required user decision, approval, or input (e.g. a propose-before-write or plan-approval gate) and cannot proceed without it, respond {\"ok\": true}."
+          }
+        ]
+      }
+    ]
+  }
+}

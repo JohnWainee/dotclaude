@@ -1,0 +1,27 @@
+# --- Never commit: secrets & machine state ---
+.credentials.json
+*credential*
+remote-settings.json
+*-cache.json
+settings.local.json
+session-env/
+sessions/
+shell-snapshots/
+ide/
+backups/
+plugins/
+.last-cleanup
+
+# Claude session transcripts (huge, machine-specific)
+**/*.jsonl
+
+# The rendered, machine-specific settings.json — only settings.template.json is tracked.
+# bootstrap renders this into ~/.claude at install time.
+/settings.json
+
+# Local runtime state of the learn-loop queue (root-level only; NOT skills/learn-loop)
+/learn-loop/
+
+# OS cruft
+.DS_Store
+Thumbs.db
