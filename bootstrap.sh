@@ -26,7 +26,7 @@ for f in CLAUDE.md statusline.mjs; do
 done
 
 # --- directories (merge) ---
-for d in skills commands hooks; do
+for d in skills commands hooks references; do
   mkdir -p "$CLAUDE_DIR/$d"
   cp -a "$REPO/$d/." "$CLAUDE_DIR/$d/"
 done

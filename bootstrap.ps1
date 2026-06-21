@@ -30,7 +30,7 @@ foreach ($f in "CLAUDE.md","statusline.mjs") {
 }
 
 # --- directories (merge) ---
-foreach ($d in "skills","commands","hooks") {
+foreach ($d in "skills","commands","hooks","references") {
   New-Item -ItemType Directory -Force -Path "$ClaudeDir\$d" | Out-Null
   Copy-Item "$Repo\$d\*" "$ClaudeDir\$d" -Recurse -Force
 }
