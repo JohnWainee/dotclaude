@@ -1,6 +1,6 @@
 # ADR-002: Adversarial review checklists for PowerShell and IaC
 
-**Status:** Proposed — draft, not yet approved (code gate applies before authoring)
+**Status:** Accepted — implemented on branch `feat/powershell-iac-checklists`
 **Date:** 2026-06-21
 **Owner:** juanp
 **Trigger:** ADR-001 deferred per-domain coverage; the external repo had zero
@@ -116,6 +116,22 @@ as ADR-001, deployed via the existing `references/` mechanism:
    Terraform + Ansible first; Bicep on demand.)
 2. Should `/review-pr` auto-select the checklist by changed-file extension
    (`.ps1` → PowerShell, `.tf`/`.yml` → IaC), or stay manual-attach?
-3. Verification: no live PR test bed yet — how do we exercise these before
-   trusting them on real infra changes? (Candidate: a deliberately-flawed
-   sample script/module as a fixture.)
+3. ~~Verification: no live PR test bed yet~~ — **Resolved.** Deliberately-flawed
+   fixtures live in `tests/fixtures/` (`sample-flawed.ps1`, `sample-flawed.tf`)
+   with a blind answer key in `tests/README.md`. A blind adversarial pass caught
+   every planted defect at ≥80 (7/7 IaC, 6/7 PowerShell) plus two real bonus
+   findings, with no manufactured nits.
+
+## Verification result (2026-06-21)
+
+A finder agent reviewed both fixtures with the new checklists, blind to the
+answer key:
+- **IaC:** 7/7 planted defects flagged ≥80 (hardcoded password, public DB, open
+  SG, `*:*` IAM, non-sensitive output, unpinned provider, unrecoverable destroy)
+  + bonus: storage-encryption-off; correctly gated an IAM-reference design note
+  at 70 (<80).
+- **PowerShell:** caught `Invoke-Expression` injection, unvalidated recursive
+  delete, plaintext-secret chain, error-swallowing `catch`, and unset
+  `$ErrorActionPreference` (all ≥80) + bonus: pipeline-output pollution. The
+  one "minor" planted item (non-idempotent `New-Item`) was folded into the
+  error-handling finding rather than called out separately.

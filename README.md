@@ -11,7 +11,8 @@ Clone, run the bootstrap, restart Claude Code.
 | `skills/` | Home-built skills: `learn-loop` (local capture→codify), `workflow-mode` (lifecycle discipline). |
 | `commands/ship-issue.md` | `/ship-issue <n>` — drive a GitHub issue to a reviewed PR. Platform-neutral. |
 | `commands/review-pr.md` | `/review-pr <pr>` — adversarial multi-agent PR review (guilty-until-proven-innocent, confidence-gated ≥80), wired to the adversarial checklist. |
-| `references/` | Loadable review references: `adversarial-review-checklist.md` (language-agnostic, attach to `/code-review` or auto-loaded by `/review-pr`). |
+| `references/` | Loadable review references: `adversarial-review-checklist.md` (language-agnostic), `adversarial-review-powershell.md`, `adversarial-review-iac.md` — attach to `/code-review` or auto-loaded by `/review-pr`. |
+| `tests/` | Verification fixtures for the review checklists (deliberately-flawed `.ps1`/`.tf` + answer key). Not deployed by bootstrap. |
 | `hooks/block-main-push.mjs` | PreToolUse(Bash) guard — blocks direct commit/push to `main`/`master`. |
 | `statusline.mjs` | Status line (model · branch · folder / cost · duration · context bar). |
 | `settings.template.json` | Settings with a `__CLAUDE_DIR__` placeholder; bootstrap renders it per machine. |
