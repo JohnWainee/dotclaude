@@ -31,6 +31,17 @@ for d in skills commands hooks references; do
   cp -a "$REPO/$d/." "$CLAUDE_DIR/$d/"
 done
 
+# --- packages (each has its own commands/, references/, etc.) ---
+for pkg in "$REPO"/packages/*/; do
+  [ -d "$pkg" ] || continue
+  for d in commands references; do
+    if [ -d "$pkg/$d" ]; then
+      mkdir -p "$CLAUDE_DIR/$d"
+      cp -a "$pkg/$d/." "$CLAUDE_DIR/$d/"
+    fi
+  done
+done
+
 # --- render settings.json (forward-slash absolute path; node accepts it on all OSes) ---
 backup "$CLAUDE_DIR/settings.json"
 sed "s#__CLAUDE_DIR__#${CLAUDE_DIR}#g" "$REPO/settings.template.json" > "$CLAUDE_DIR/settings.json"
