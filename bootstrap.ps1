@@ -37,7 +37,7 @@ foreach ($d in "skills","commands","hooks","references") {
 
 # --- packages (each has its own commands/, references/, etc.) ---
 foreach ($pkg in Get-ChildItem "$Repo\packages" -Directory -ErrorAction SilentlyContinue) {
-  foreach ($d in "commands","references") {
+  foreach ($d in "commands","references","templates") {
     if (Test-Path "$($pkg.FullName)\$d") {
       New-Item -ItemType Directory -Force -Path "$ClaudeDir\$d" | Out-Null
       Copy-Item "$($pkg.FullName)\$d\*" "$ClaudeDir\$d" -Recurse -Force
