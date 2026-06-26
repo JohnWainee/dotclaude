@@ -34,7 +34,7 @@ done
 # --- packages (each has its own commands/, references/, etc.) ---
 for pkg in "$REPO"/packages/*/; do
   [ -d "$pkg" ] || continue
-  for d in commands references; do
+  for d in commands references templates; do
     if [ -d "$pkg/$d" ]; then
       mkdir -p "$CLAUDE_DIR/$d"
       cp -a "$pkg/$d/." "$CLAUDE_DIR/$d/"

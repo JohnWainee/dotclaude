@@ -25,22 +25,10 @@ Three enforcement layers:
 Bootstrap updated with a generic `packages/*/` loop — future packages get
 picked up automatically.
 
-## Next: `/doc-gen` (ADR-004)
+## `/doc-gen` shipped (ADR-004, accepted)
 
-Separate package under `packages/doc-gen/` that **depends on** the IBM style
-reference. Generates runbooks, troubleshooting guides, and junior-engineer
-how-tos per module using project-type-specific templates.
+Separate package under `packages/doc-gen/` that depends on the IBM style
+reference. Scans repos, proposes documentation plans, and generates docs using
+pluggable template packs. V1 ships Terraform and Kubernetes packs.
 
-Open design questions (from ADR-004):
-- Template taxonomy: which project types get templates first (recommendation:
-  Windows infrastructure, the primary day-to-day context).
-- Scope per invocation: single module/directory vs. full repo.
-- Output format: flat files vs. directory structure.
-- Module boundary discovery: convention-based scanning, explicit argument, or
-  both.
-- Generated-by marker for traceability.
-
-**How to apply:** When starting the `/doc-gen` work, read `docs/adr/ADR-004-automated-doc-generation.md`
-for the full decision record. The IBM style reference at
-`packages/ibm-doc-style/references/ibm-documentation-style.md` is the
-dependency — `/doc-gen` loads it before generating any documentation.
+See `memory/doc-gen-package.md` for full details on what shipped and future packs.
