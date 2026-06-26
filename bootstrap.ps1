@@ -35,6 +35,16 @@ foreach ($d in "skills","commands","hooks","references") {
   Copy-Item "$Repo\$d\*" "$ClaudeDir\$d" -Recurse -Force
 }
 
+# --- packages (each has its own commands/, references/, etc.) ---
+foreach ($pkg in Get-ChildItem "$Repo\packages" -Directory -ErrorAction SilentlyContinue) {
+  foreach ($d in "commands","references") {
+    if (Test-Path "$($pkg.FullName)\$d") {
+      New-Item -ItemType Directory -Force -Path "$ClaudeDir\$d" | Out-Null
+      Copy-Item "$($pkg.FullName)\$d\*" "$ClaudeDir\$d" -Recurse -Force
+    }
+  }
+}
+
 # --- render settings.json (forward-slash absolute path; node accepts it on Windows) ---
 Backup "$ClaudeDir\settings.json"
 (Get-Content "$Repo\settings.template.json" -Raw).Replace('__CLAUDE_DIR__', $ClaudeDirFwd) |
