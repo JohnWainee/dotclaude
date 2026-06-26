@@ -20,7 +20,7 @@ Clone, run the bootstrap, restart Claude Code.
 | `docs/adr/` | Architecture decision records (e.g. ADR-001 code-review augmentation, ADR-002 PowerShell/IaC checklists). |
 
 **Deliberately excluded:** credentials, caches, `settings.local.json` (per-machine
-overrides), session transcripts, and the Moʻolelo project memory scope (kept off GitHub).
+overrides), session transcripts
 
 ## Install
 
