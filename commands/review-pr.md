@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(gh issue view:*), Bash(gh search:*), Bash(gh issue list:*), Bash(gh pr comment:*), Bash(gh pr diff:*), Bash(gh pr view:*), Bash(gh pr list:*)
+allowed-tools: Task, Read, TodoWrite, Bash(gh issue view:*), Bash(gh search:*), Bash(gh issue list:*), Bash(gh pr comment:*), Bash(gh pr diff:*), Bash(gh pr view:*), Bash(gh pr list:*)
 description: Adversarial multi-agent code review of a pull request (guilty-until-proven-innocent, confidence-gated).
 argument-hint: <pr-number-or-url>
 ---
@@ -18,12 +18,13 @@ To do this, follow these steps precisely:
 1. Use a Haiku agent to check if the pull request (a) is closed, (b) is a draft, (c) does not need a code review (eg. because it is an automated pull request, or is very simple and obviously ok), or (d) already has a code review from you from earlier. If so, do not proceed.
 2. Use another Haiku agent to give you a list of file paths to (but not the contents of) any relevant CLAUDE.md files from the codebase: the root CLAUDE.md file (if one exists), as well as any CLAUDE.md files in the directories whose files the pull request modified
 3. Use a Haiku agent to view the pull request, and ask the agent to return a summary of the change
-4. Then, launch 5 parallel Sonnet agents to independently code review the change. **Give every agent the adversarial checklist content** and instruct each to apply its operating rules (default to refute; one finding = one defensible claim with location, failing scenario, and consequence) and its severity taxonomy (🔴 blocking / 🟠 important / 🟡 nit / 🔵 design). The agents should do the following, then return a list of issues and the reason each issue was flagged (eg. CLAUDE.md adherence, bug, historical git context, checklist anti-pattern, etc.):
+4. Then, launch 6 parallel Sonnet agents to independently code review the change. **Give every agent the adversarial checklist content** and instruct each to apply its operating rules (default to refute; one finding = one defensible claim with location, failing scenario, and consequence) and its severity taxonomy (🔴 blocking / 🟠 important / 🟡 nit / 🔵 design). The agents should do the following, then return a list of issues and the reason each issue was flagged (eg. CLAUDE.md adherence, bug, historical git context, checklist anti-pattern, doc style, etc.):
    a. Agent #1: Audit the changes to make sure they comply with the CLAUDE.md. Note that CLAUDE.md is guidance for Claude as it writes code, so not all instructions will be applicable during code review.
    b. Agent #2: Read the file changes in the pull request, then do an adversarial scan for bugs **using the checklist's Correctness, Security, and Anti-patterns sections** (boundaries, null/absent, concurrency, TOCTOU, error paths, resource lifecycle, no-op updates, reuse audit, parameter sprawl, leaky abstractions, stringly-typed code, redundant state). Focus on the changes themselves. Avoid likely false positives.
    c. Agent #3: Read the git blame and history of the code modified, to identify any bugs in light of that historical context
    d. Agent #4: Read previous pull requests that touched these files, and check for any comments on those pull requests that may also apply to the current pull request.
    e. Agent #5: Read code comments in the modified files, and make sure the changes in the pull request comply with any guidance in the comments.
+   f. Agent #6: Check whether the PR modifies any markdown documentation files (`.md`). If none were changed, return "no documentation files in diff — skipped" and stop. If markdown files were changed, read the IBM documentation style reference at `~/.claude/references/ibm-documentation-style.md` (honor `$CLAUDE_CONFIG_DIR` if set) and audit each changed document against it. Apply the reference's severity taxonomy (blocking / important / nit). For each finding, return: the severity, a one-line description, the file and location, and a concrete fix recommendation. Apply the same confidence-gating rules as the other agents.
 5. For each issue found in #4, launch a parallel Haiku agent that takes the PR, issue description, the adversarial checklist, and list of CLAUDE.md files (from step 2), and returns a score to indicate the agent's level of confidence for whether the issue is real or false positive. To do that, the agent should score each issue on a scale from 0-100, indicating its level of confidence. For issues that were flagged due to CLAUDE.md instructions, the agent should double check that the CLAUDE.md actually calls out that issue specifically. The scale is (give this rubric to the agent verbatim):
    a. 0: Not confident at all. This is a false positive that doesn't stand up to light scrutiny, or is a pre-existing issue.
    b. 25: Somewhat confident. This might be a real issue, but may also be a false positive. The agent wasn't able to verify that it's a real issue. If the issue is stylistic, it is one that was not explicitly called out in the relevant CLAUDE.md.
@@ -48,6 +49,7 @@ Examples of false positives, for steps 4 and 5:
 - Issues that are called out in CLAUDE.md, but explicitly silenced in the code (eg. due to a lint ignore comment)
 - Changes in functionality that are likely intentional or are directly related to the broader change
 - Real issues, but on lines that the user did not modify in their pull request
+- Style preferences that contradict an explicit project convention in CLAUDE.md
 
 Notes:
 
