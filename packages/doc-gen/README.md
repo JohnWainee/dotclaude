@@ -11,6 +11,8 @@ IBM-style-conformant docs from pluggable template packs.
 | `references/doc-gen-template-spec.md` | Template pack format specification. |
 | `templates/doc-gen/terraform/pack.md` | Terraform template pack (modules, variables, runbooks, troubleshooting). |
 | `templates/doc-gen/kubernetes/pack.md` | Kubernetes template pack (workloads, Helm values, runbooks, troubleshooting). |
+| `templates/doc-gen/windows-infra/pack.md` | Windows Infrastructure template pack (components, environment, runbooks, change management). |
+| `templates/doc-gen/powershell/pack.md` | PowerShell Module template pack (functions, parameters, installation, examples). |
 
 ## Prerequisites
 
@@ -67,8 +69,8 @@ automatically. No separate steps are needed.
 
 1. `/doc-gen` scans the target directory for file patterns that match installed
    template packs.
-2. It discovers module boundaries (Terraform modules, Helm charts, Kustomize
-   bases).
+2. It discovers module boundaries (Terraform modules, Helm charts, PowerShell
+   modules, Windows infrastructure components).
 3. It presents a checklist of files to generate. You can remove items before
    approving.
 4. After you approve, it reads source files and generates documentation one file
@@ -87,10 +89,12 @@ docs/
       README.md
       variables.md             # Terraform
       outputs.md               # Terraform
+      functions.md             # PowerShell
+      parameters.md            # PowerShell
   runbooks/                    # Operational procedures
   troubleshooting/             # Symptom-based troubleshooting
-  guides/                      # How-to guides
-  reference/                   # Reference material (Helm values, etc.)
+  guides/                      # How-to guides (installation, examples, change management)
+  reference/                   # Reference material (Helm values, environment, etc.)
 ```
 
 ### Post-generation
@@ -120,6 +124,32 @@ Generates documentation for Kubernetes manifests and Helm charts:
 - Deployment runbook
 - Rollback runbook
 - Troubleshooting guide
+
+### Windows Infrastructure
+
+Generates documentation for Windows server administration:
+- Project overview
+- Component references (per infrastructure component)
+- Environment reference (servers, roles, dependencies)
+- Operational runbooks (per component)
+- Change management guide
+- Troubleshooting guide
+
+Detection uses DSC configurations, Group Policy files, and IIS config as
+high-weight signals. For general Windows admin script repos without these
+markers, use `--pack windows-infra`.
+
+### PowerShell Module
+
+Generates documentation for PowerShell modules:
+- Module overview
+- Function references (per module)
+- Parameter references (per module)
+- Installation guide
+- Usage examples
+- Troubleshooting guide
+
+Detection uses `.psm1` and `.psd1` files as definitive markers.
 
 ### Adding custom packs
 

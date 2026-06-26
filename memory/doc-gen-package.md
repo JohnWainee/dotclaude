@@ -1,6 +1,6 @@
 ---
 name: doc-gen-package
-description: "doc-gen package — pluggable documentation generation with Terraform and Kubernetes template packs."
+description: "doc-gen package — pluggable documentation generation with Terraform, Kubernetes, Windows Infrastructure, and PowerShell template packs."
 metadata:
   node_type: memory
   type: project
@@ -25,12 +25,16 @@ the IBM Documentation Style package (ADR-003).
 - **IBM style dependency.** Every generated document conforms to the IBM
   Documentation Style Guide. The reference is loaded before any generation.
 
-### V1 template packs
+### Template packs
 
 1. **Terraform** — module references, variable catalogs, output references, state
    management runbook, troubleshooting guide.
 2. **Kubernetes** — workload references, Helm values reference, deployment
    runbook, rollback runbook, troubleshooting guide.
+3. **Windows Infrastructure** — component references, environment reference,
+   operational runbooks, change management guide, troubleshooting guide.
+4. **PowerShell Module** — function references, parameter references, installation
+   guide, usage examples, troubleshooting guide.
 
 ### Key files
 
@@ -40,6 +44,8 @@ the IBM Documentation Style package (ADR-003).
 | `packages/doc-gen/references/doc-gen-template-spec.md` | Template pack format spec |
 | `packages/doc-gen/templates/doc-gen/terraform/pack.md` | Terraform template pack |
 | `packages/doc-gen/templates/doc-gen/kubernetes/pack.md` | Kubernetes template pack |
+| `packages/doc-gen/templates/doc-gen/windows-infra/pack.md` | Windows Infrastructure template pack |
+| `packages/doc-gen/templates/doc-gen/powershell/pack.md` | PowerShell Module template pack |
 | `docs/adr/ADR-004-automated-doc-generation.md` | Decision record |
 
 ### Bootstrap change
@@ -51,8 +57,6 @@ commands and references.
 ## Future packs
 
 Planned template packs (not yet built):
-- Windows infrastructure (runbooks, troubleshooting, SOPs)
-- PowerShell modules (function help, module overview, examples)
 - Node.js
 - Go
 - Terraform (extended — Terragrunt, workspaces)
